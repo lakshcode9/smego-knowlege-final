@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Smegomade Blueprint — Get Paid For Your Designs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700;1,900&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────────────── */
+    :root {
+      --ink:      #000000;
+      --surface:  #080808;
+      --card:     #111111;
+      --lift:     #181818;
+      --gold:     #ffffff;
+      --gold2:    #bbbbbb;
+      --red:      #555555;
+      --smoke:    #f2f2f2;
+      --muted:    rgba(255,255,255,0.4);
+      --border:   rgba(255,255,255,0.1);
+      --glow:     rgba(255,255,255,0.04);
+      --ff-head:  'Barlow Condensed', sans-serif;
+      --ff-mono:  'DM Mono', monospace;
+      --ff-body:  'Lora', serif;
+    }
+
+    /* ── RESET ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ink);
+      color: var(--smoke);
+      font-family: var(--ff-body);
+      font-size: 17px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; filter: grayscale(1); transition: filter 0.4s ease; }
+    img:hover { filter: grayscale(0.2); }
+
+    /* ── GRAIN OVERLAY ─────────────────────────────────────────────── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* ── UTILITIES ─────────────────────────────────────────────────── */
+    .container { width: 100%; max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+    .gold  { color: var(--gold); }
+    .red   { color: var(--red); }
+    .muted { color: var(--muted); }
+    .mono  { font-family: var(--ff-mono); font-size: 0.78em; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--ff-mono); font-size: 0.72rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 2px;
+      background: var(--glow);
+    }
+    .tag::before { content: '▸'; font-size: 0.65rem; }
+
+    /* ── REVEAL ANIMATIONS ─────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── NAV ────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 20px 0;
+      background: linear-gradient(to bottom, rgba(7,7,7,0.98) 0%, rgba(7,7,7,0) 100%);
+      backdrop-filter: blur(0px);
+      transition: background 0.3s, backdrop-filter 0.3s, padding 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(7,7,7,0.96);
+      backdrop-filter: blur(12px);
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 1.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--smoke); }
+    .btn-nav {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: var(--ink);
+      padding: 10px 22px;
+      border-radius: 2px;
+      font-weight: 500;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-nav:hover { background: #eeeeee; transform: translateY(-1px); }
+
+    /* ── HERO ───────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Background grid lines */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+    }
+    /* Glow blob */
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 20%; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      padding: 80px 0 100px;
+    }
+    .hero-eyebrow {
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s 0.2s both;
+    }
+    .hero-headline {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: clamp(4rem, 8vw, 7.5rem);
+      line-height: 0.93;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      animation: fadeUp 0.8s 0.35s both;
+    }
+    .hero-headline .line-accent {
+      color: var(--gold);
+      font-style: italic;
+      display: block;
+    }
+    .hero-headline .line-stroke {
+      -webkit-text-stroke: 1.5px var(--smoke);
+      color: transparent;
+      display: block;
+    }
+    .hero-sub {
+      margin-top: 28px;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 440px;
+      animation: fadeUp 0.8s 0.5s both;
+    }
+    .hero-ctas {
+      display: flex; gap: 16px; align-items: center;
+      margin-top: 36px;
+      animation: fadeUp 0.8s 0.65s both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--gold);
+      color: var(--ink);
+      font-family: var(--ff-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 16px 30px;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      background: #eeeeee;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255,255,255,0.15);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .btn-secondary:hover { color: var(--smoke); }
+    .btn-secondary::before { content: '↓'; }
+
+    /* Hero right: poster mockup */
+    .hero-visual {
+      animation: fadeUp 0.8s 0.5s both;
+      position: relative;
+    }
+    .poster-frame {
+      position: relative;
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 4px;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0;
+    }
+    .poster-frame::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+    }
+    .poster-text-big {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-style: italic;
+      font-size: 6rem;
+      line-height: 0.9;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      /* text shadow for depth */
+      text-shadow: 4px 4px 0 rgba(0,0,0,0.5), -1px -1px 0 rgba(233,201,77,0.3);
+    }
+    .poster-text-mid {
+      font-family: var(--ff-head);
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--muted);
+      position: relative; z-index: 1;
+      margin-top: 16px;
+    }
+    .poster-badge {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--red);
+      color: var(--smoke);
+      font-family: var(--ff-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+    .poster-watermark {
+      position: absolute;
+      bottom: 16px; left: 16px;
+      font-family: var(--ff-mono);
+      font-size: 0.62rem;
+      color: var(--border);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    /* decorative vertical text */
+    .poster-vert {
+      position: absolute;
+      right: 16px; bottom: 50px;
+      font-family: var(--ff-mono);
+      font-size: 0.55rem;
+      color: var(--border);
+      writing-mode: vertical-rl;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    /* Floating accent */
+    .hero-accent {
+      position: absolute;
+      top: -20px; left: -20px;
+      width: 80px; height: 80px;
+      border: 2px solid var(--gold);
+      opacity: 0.3;
+      border-radius: 2px;
+      transform: rotate(15deg);
+    }
+
+    /* ── TICKER ─────────────────────────────────────────────────────── */
+    .ticker {
+      background: var(--gold);
+      color: var(--ink);
+      padding: 12px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-flex; gap: 0;
+      animation: ticker 24s linear infinite;
+    }
+    .ticker-item {
+      font-family: var(--ff-head);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0 32px;
+    }
+    .ticker-sep {
+      font-size: 0.6rem;
+      opacity: 0.5;
+      padding: 0;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── STATS ─────────────────────────────────────────────────────── */
+    .stats {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .stat-item {
+      background: var(--surface);
+      padding: 40px 32px;
+      position: relative;
+    }
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: transparent;
+      transition: background 0.3s;
+    }
+    .stat-item:hover::before { background: var(--gold); }
+    .stat-number {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 3.8rem;
+      line-height: 1;
+      color: var(--gold);
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      margin-top: 8px;
+      font-family: var(--ff-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── SECTION SHARED ─────────────────────────────────────────────── */
+    section { padding: 120px 0; }
+    .section-eyebrow { margin-bottom: 20px; }
+    .section-title {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+    .section-body {
+      margin-top: 20px;
+      color: var(--muted);
+      max-width: 520px;
+      font-size: 1.02rem;
+    }
+    .divider {
+      width: 48px; height: 3px;
+      background: var(--gold);
+      margin: 24px 0;
+    }
+
+    /* ── PAIN ────────────────────────────────────────────────────────── */
+    .pain { background: var(--surface); }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .pain-list { margin-top: 48px; display: flex; flex-direction: column; gap: 20px; }
+    .pain-item {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 22px 24px;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 3px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .pain-item:hover { border-color: rgba(214,52,38,0.3); }
+    .pain-item::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--red);
+    }
+    .pain-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .pain-text {
+      font-size: 0.97rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .pain-text strong { color: var(--smoke); font-style: normal; }
+    .pain-cta-block {
+      margin-top: 40px;
+      padding: 32px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+    .pain-cta-block p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .pain-cta-block p strong { color: var(--smoke); }
+    .pain-quote {
+      border-left: 3px solid var(--gold);
+      padding: 20px 24px;
+      background: var(--lift);
+      border-radius: 0 3px 3px 0;
+      margin-bottom: 28px;
+    }
+    .pain-quote p {
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--smoke);
+      margin-bottom: 12px;
+    }
+    .pain-quote .author {
+      font-family: var(--ff-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    /* ── ABOUT ────────────────────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-placeholder {
+      aspect-ratio: 4/5;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-img-placeholder::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(233,201,77,0.04) 0%, transparent 50%);
+    }
+    .about-img-placeholder .big-initial {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-style: italic;
+      font-size: 10rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+      position: absolute;
+      bottom: -20px; right: -10px;
+    }
+    .about-img-label {
+      position: relative; z-index: 1;
+      font-family: var(--ff-mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .about-img-name {
+      position: relative; z-index: 1;
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--smoke);
+    }
+    .corner-accent {
+      position: absolute;
+      width: 40px; height: 40px;
+      border-color: var(--gold);
+      border-style: solid;
+      border-width: 0;
+      opacity: 0.5;
+    }
+    .corner-accent.tl { top: 16px; left: 16px; border-top-width: 2px; border-left-width: 2px; }
+    .corner-accent.br { bottom: 16px; right: 16px; border-bottom-width: 2px; border-right-width: 2px; }
+    .about-credentials {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-top: 36px;
+    }
+    .credential {
+      display: flex; align-items: center; gap: 14px;
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .credential::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    /* ── MODULES ─────────────────────────────────────────────────────── */
+    .modules { background: var(--surface); }
+    .modules-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: end;
+      margin-bottom: 64px;
+    }
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .module-card {
+      background: var(--card);
+      padding: 36px 30px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .module-card:hover { background: var(--lift); }
+    .module-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .module-card:hover::after { transform: scaleX(1); }
+    .module-num {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 4.5rem;
+      color: rgba(255,255,255,0.06);
+      line-height: 1;
+      position: absolute;
+      top: 16px; right: 20px;
+      transition: color 0.3s;
+    }
+    .module-card:hover .module-num { color: rgba(255,255,255,0.12); }
+    .module-icon {
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+    .module-title {
+      font-family: var(--ff-head);
+      font-weight: 800;
+      font-size: 1.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      position: relative; z-index: 1;
+    }
+    .module-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+      position: relative; z-index: 1;
+    }
+    .module-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 20px;
+    }
+    .module-tag {
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 2px;
+    }
+
+    /* ── TESTIMONIALS ────────────────────────────────────────────────── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 64px;
+    }
+    .testimonial-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 3px;
+      padding: 32px;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .testimonial-card:hover {
+      border-color: var(--border);
+      transform: translateY(-3px);
+    }
+    .quote-mark {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 5rem;
+      color: var(--gold);
+      line-height: 0.8;
+      opacity: 0.25;
+      margin-bottom: 4px;
+    }
+    .testimonial-text {
+      font-style: italic;
+      font-size: 0.97rem;
+      line-height: 1.65;
+      color: var(--smoke);
+      margin-bottom: 24px;
+    }
+    .testimonial-author {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .author-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--lift);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--ff-head);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .author-name {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--smoke);
+    }
+    .author-handle {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .stars {
+      color: var(--gold);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+    /* Featured big testimonial */
+    .testimonial-featured {
+      grid-column: 1 / -1;
+      background: var(--lift);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 40px;
+      align-items: center;
+    }
+    .featured-quote {
+      font-family: var(--ff-head);
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      line-height: 1.2;
+      font-style: italic;
+      color: var(--smoke);
+    }
+    .featured-quote .highlight { color: var(--gold); }
+    .featured-meta { text-align: right; }
+    .featured-result {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 3.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .featured-result-label {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── PRICING ─────────────────────────────────────────────────────── */
+    .pricing { background: var(--surface); }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      gap: 20px;
+      margin-top: 64px;
+      align-items: start;
+    }
+    .price-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 3px;
+      padding: 40px 32px;
+      transition: transform 0.3s;
+    }
+    .price-card:hover { transform: translateY(-4px); }
+    .price-card.featured {
+      background: var(--lift);
+      border-color: var(--gold);
+      position: relative;
+    }
+    .price-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -1px; left: 50%; transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--ink);
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 16px;
+      border-radius: 0 0 3px 3px;
+    }
+    .price-tier {
+      font-family: var(--ff-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .price-amount {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 3.8rem;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .price-amount .currency {
+      font-size: 1.8rem;
+      vertical-align: super;
+      letter-spacing: 0;
+    }
+    .price-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-top: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      line-height: 1.6;
+    }
+    .price-features {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 14px;
+      margin-bottom: 32px;
+    }
+    .price-features li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .price-features li::before {
+      content: '✓';
+      color: var(--gold);
+      flex-shrink: 0;
+      font-size: 0.85rem;
+      margin-top: 1px;
+    }
+    .price-features li.inactive { opacity: 0.35; }
+    .price-features li.inactive::before { content: '—'; color: var(--muted); }
+    .btn-price {
+      display: block;
+      text-align: center;
+      font-family: var(--ff-mono);
+      font-size: 0.73rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 15px 24px;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .btn-price-primary {
+      background: var(--gold);
+      color: var(--ink);
+    }
+    .btn-price-primary:hover {
+      background: #eeeeee;
+      box-shadow: 0 8px 24px rgba(255,255,255,0.15);
+    }
+    .btn-price-outline {
+      border: 1px solid var(--border);
+      color: var(--smoke);
+    }
+    .btn-price-outline:hover { border-color: rgba(255,254,242,0.35); }
+
+    /* ── FAQ ─────────────────────────────────────────────────────────── */
+    .faq-list { margin-top: 56px; max-width: 760px; margin-left: auto; margin-right: auto; }
+    .faq-item {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--smoke);
+      font-family: var(--ff-head);
+      font-weight: 700;
+      font-size: 1.35rem;
+      text-align: left;
+      padding: 28px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .faq-q:hover { color: var(--gold); }
+    .faq-icon {
+      font-size: 1.4rem;
+      color: var(--gold);
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      font-size: 0.97rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s;
+    }
+    .faq-item.open .faq-a {
+      max-height: 300px;
+      padding-bottom: 28px;
+    }
+
+    /* ── FINAL CTA ───────────────────────────────────────────────────── */
+    .final-cta {
+      padding: 120px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+    .final-cta::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 300px;
+      background: radial-gradient(ellipse, rgba(235, 235, 235, 0.04) 0%, transparent 70%);
+    }
+    .final-title {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: clamp(3.5rem, 8vw, 8rem);
+      line-height: 0.92;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      position: relative; z-index: 1;
+    }
+    .final-sub {
+      margin-top: 24px;
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 500px;
+      margin-left: auto; margin-right: auto;
+      position: relative; z-index: 1;
+    }
+    .final-btns {
+      margin-top: 40px;
+      display: flex; gap: 16px; justify-content: center;
+      position: relative; z-index: 1;
+    }
+    .final-note {
+      margin-top: 20px;
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      position: relative; z-index: 1;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-family: var(--ff-head);
+      font-weight: 900;
+      font-size: 1.25rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+    .footer-links a {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--smoke); }
+    .footer-copy {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── KEYFRAMES ───────────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-inner     { grid-template-columns: 1fr; gap: 56px; }
+      .hero-visual    { max-width: 360px; margin: 0 auto; }
+      .stats-grid     { grid-template-columns: repeat(2, 1fr); }
+      .pain-grid      { grid-template-columns: 1fr; gap: 48px; }
+      .about-grid     { grid-template-columns: 1fr; gap: 48px; }
+      .modules-header { grid-template-columns: 1fr; }
+      .modules-grid   { grid-template-columns: repeat(2, 1fr); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .testimonial-featured { grid-template-columns: 1fr; }
+      .featured-meta  { text-align: left; }
+      .pricing-grid   { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+      .nav-links      { display: none; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 0 20px; }
+      section    { padding: 80px 0; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .modules-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ──────────────────────────────────────────────────────────── -->
+  <nav id="nav">
+    <div class="container">
+      <div class="nav-inner">
+        <div class="nav-logo">smego<span>®</span></div>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#modules">Blueprint</a></li>
+          <li><a href="#testimonials">Results</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+        <a href="#pricing" class="btn-nav">Get the Blueprint</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────── -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="hero-eyebrow">
+            <span class="tag">The Smegomade Blueprint</span>
+          </div>
+          <h1 class="hero-headline">
+            <span>You can</span>
+            <span class="line-accent">design.</span>
+            <span class="line-stroke">Now get</span>
+            <span>paid.</span>
+          </h1>
+          <p class="hero-sub">
+            The exact system a self-taught poster & cover art designer used to go from undercharging to landing premium clients — without Fiverr, without cold calls, without burning out.
+          </p>
+          <div class="hero-ctas">
+            <a href="#pricing" class="btn-primary">
+              <span>Get the Blueprint</span>
+              <span>→</span>
+            </a>
+            <a href="#modules" class="btn-secondary">See what's inside</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-accent"></div>
+          <div class="poster-frame">
+            <img src="images/destroylonelyEXPERIMENTAL3 1.png" alt="Design Portfolio" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.6;">
+            <div class="poster-badge">Blueprint</div>
+            <div class="poster-watermark">smegomade®</div>
+            <div class="poster-vert">Design · Business · Freedom</div>
+            <div class="poster-text-big" style="text-shadow:none;">SMEGO<br>MADE</div>
+            <div class="poster-text-mid">The Designer's Blueprint</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── TICKER ────────────────────────────────────────────────────────── -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <!-- doubled for infinite loop -->
+      <span class="ticker-item">Poster Design</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Typography Mastery</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Client Acquisition</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Premium Pricing</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Album Cover Art</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Clothing Design</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Business Systems</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Financial Freedom</span><span class="ticker-sep">✦</span>
+      <!-- repeat -->
+      <span class="ticker-item">Poster Design</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Typography Mastery</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Client Acquisition</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Premium Pricing</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Album Cover Art</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Clothing Design</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Business Systems</span><span class="ticker-sep">✦</span>
+      <span class="ticker-item">Financial Freedom</span><span class="ticker-sep">✦</span>
+    </div>
+  </div>
+
+  <!-- ── STATS ─────────────────────────────────────────────────────────── -->
+  <div class="stats">
+    <div class="container">
+      <div class="stats-grid reveal">
+        <div class="stat-item">
+          <div class="stat-number">500<span class="gold">+</span></div>
+          <div class="stat-label">Designers Helped</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">3<span class="gold">x</span></div>
+          <div class="stat-label">Average Rate Increase</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">6<span class="gold">yr</span></div>
+          <div class="stat-label">In The Industry</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100<span class="gold">%</span></div>
+          <div class="stat-label">Field-Tested System</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAIN ──────────────────────────────────────────────────────────── -->
+  <section class="pain" id="pain">
+    <div class="container">
+      <div class="pain-grid">
+        <div>
+          <div class="section-eyebrow">
+            <span class="tag">Sound Familiar?</span>
+          </div>
+          <h2 class="section-title reveal">
+            The grind<br>that's<br><span class="gold">killing</span><br>your craft.
+          </h2>
+          <div class="divider"></div>
+          <p class="section-body reveal">
+            You've got the skills. You've done the tutorials. Your portfolio looks clean.
+            But the clients aren't coming — or the ones who do won't pay what you're worth.
+          </p>
+        </div>
+
+        <div>
+          <div class="pain-quote reveal">
+            <p>"I was charging $30 for poster work that took me 8 hours. I didn't know there was another way."</p>
+            <span class="author">— Designer before the Blueprint</span>
+          </div>
+
+          <div class="pain-list">
+            <div class="pain-item reveal">
+              <div class="pain-icon"></div>
+              <div class="pain-text"><strong>Undercharging for premium work</strong> — your rates are based on fear, not your actual value.</div>
+            </div>
+            <div class="pain-item reveal">
+              <div class="pain-icon"></div>
+              <div class="pain-text"><strong>No repeatable client system</strong> — every project is a cold start. No referrals, no retainers.</div>
+            </div>
+            <div class="pain-item reveal">
+              <div class="pain-icon"></div>
+              <div class="pain-text"><strong>Stuck on platforms like Fiverr</strong> — competing on price with 10,000 other designers.</div>
+            </div>
+            <div class="pain-item reveal">
+              <div class="pain-icon"></div>
+              <div class="pain-text"><strong>No personal brand presence</strong> — clients don't know you exist, so they choose someone else.</div>
+            </div>
+            <div class="pain-item reveal">
+              <div class="pain-icon"></div>
+              <div class="pain-text"><strong>Skill without strategy</strong> — great work that goes nowhere because nobody taught you the business side.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ──────────────────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-img-wrap reveal">
+            <img src="images/otisredding 1.png" alt="Smegomade Creator" style="width:100%; height:100%; object-fit:cover;">
+            <div class="corner-accent tl"></div>
+            <div class="corner-accent br"></div>
+            <span class="about-img-label" style="background: rgba(0,0,0,0.6); padding: 4px 8px; position: absolute; bottom: 40px; left: 16px;">The Creator</span>
+            <span class="about-img-name" style="background: rgba(0,0,0,0.6); padding: 4px 8px; position: absolute; bottom: 12px; left: 16px;">Smegomade</span>
+            <div class="big-initial">S</div>
+        </div>
+
+        <div>
+          <div class="section-eyebrow">
+            <span class="tag">About The Creator</span>
+          </div>
+          <h2 class="section-title reveal">
+            From broke<br>student to<br><span class="gold">six-figure</span><br>designer.
+          </h2>
+          <div class="divider"></div>
+          <p class="reveal" style="color: var(--muted); font-size: 1.02rem; line-height: 1.75; margin-bottom: 20px;">
+            I'm smegomade — a self-taught graphic designer specializing in poster art, album covers, clothing design, and custom typography. I built my client base from zero, without ads, without agencies, and without selling out my creative voice.
+          </p>
+          <p class="reveal" style="color: var(--muted); font-size: 1.02rem; line-height: 1.75; margin-bottom: 32px;">
+            This blueprint is everything I wish I had when I started. Not theory — a system. The same one I use today to consistently attract premium clients who respect my rates and come back.
+          </p>
+          <div class="about-credentials reveal">
+            <div class="credential">Specialised in Poster, Album Art & Clothing Design</div>
+            <div class="credential">Built a recognized brand through Instagram (@smegomade)</div>
+            <div class="credential">Worked with independent artists, labels & clothing brands</div>
+            <div class="credential">System built from real freelance work — not theory</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE ARCHIVE (Gallery Highlight) -->
+  <section id="archive" style="padding: 100px 0;">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 48px;">
+        <span class="tag reveal">Portfolio Pieces</span>
+        <h2 class="section-title reveal">THE <span class="gold">ARCHIVE</span></h2>
+        <div class="divider reveal" style="margin-left: auto; margin-right: auto;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+        <div class="reveal" style="aspect-ratio: 1; border: 1px solid var(--border); overflow: hidden;">
+          <img src="images/cartirebrand 1.png" alt="Archived Design" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="reveal" style="aspect-ratio: 1; border: 1px solid var(--border); overflow: hidden;">
+          <img src="images/emarebrand 1.png" alt="Archived Design" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="reveal" style="aspect-ratio: 1; border: 1px solid var(--border); overflow: hidden;">
+          <img src="images/kendrickPINTEREST 1.png" alt="Archived Design" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div class="reveal" style="aspect-ratio: 1; border: 1px solid var(--border); overflow: hidden;">
+          <img src="images/wakingliferebrand 1.png" alt="Archived Design" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MODULES ────────────────────────────────────────────────────────── -->
+  <section class="modules" id="modules">
+    <div class="container">
+      <div class="modules-header">
+        <div>
+          <div class="section-eyebrow">
+            <span class="tag">What's Inside</span>
+          </div>
+          <h2 class="section-title reveal">
+            Six modules.<br><span class="gold">One system.</span>
+          </h2>
+        </div>
+        <div>
+          <p class="section-body reveal">
+            The Blueprint covers the complete journey — from developing your design skills and creative process, to attracting premium clients and running a design business that works on your terms.
+          </p>
+        </div>
+      </div>
+
+      <div class="modules-grid">
+        <div class="module-card reveal">
+          <div class="module-num">01</div>
+          <img src="images/Rectangle 2011.png" alt="Module 01" style="width:100%; height:140px; object-fit:cover; margin-bottom:20px; opacity: 0.8;">
+          <div class="module-title">The Designpreneur<br>Mindset</div>
+          <p class="module-desc">The mental shift from "I make designs" to "I run a design business." How premium designers think about pricing, clients, and creative freedom.</p>
+          <div class="module-tags">
+            <span class="module-tag">Mindset</span>
+            <span class="module-tag">Foundation</span>
+          </div>
+        </div>
+
+        <div class="module-card reveal">
+          <div class="module-num">02</div>
+          <img src="images/Rectangle 2012.png" alt="Module 02" style="width:100%; height:140px; object-fit:cover; margin-bottom:20px; opacity: 0.8;">
+          <div class="module-title">Craft & Creative<br>Systems</div>
+          <p class="module-desc">Poster design workflow, typography systems, concept-to-execution process. Build an endless well of creative ideas that keep clients coming back.</p>
+          <div class="module-tags">
+            <span class="module-tag">Skill</span>
+            <span class="module-tag">Process</span>
+            <span class="module-tag">Workflow</span>
+          </div>
+        </div>
+
+        <div class="module-card reveal">
+          <div class="module-num">03</div>
+          <img src="images/Rectangle 2013.png" alt="Module 03" style="width:100%; height:140px; object-fit:cover; margin-bottom:20px; opacity: 0.8;">
+          <div class="module-title">Pricing &<br>Positioning</div>
+          <p class="module-desc">How to price your work without fear. Anchoring, value framing, and the simple scripts that get clients to say yes at rates that respect your time.</p>
+          <div class="module-tags">
+            <span class="module-tag">Pricing</span>
+            <span class="module-tag">Value</span>
+          </div>
+        </div>
+
+        <div class="module-card reveal">
+          <div class="module-num">04</div>
+          <img src="images/Rectangle 2014.png" alt="Module 04" style="width:100%; height:140px; object-fit:cover; margin-bottom:20px; opacity: 0.8;">
+          <div class="module-title">Client Acquisition<br>System</div>
+          <p class="module-desc">How to attract ideal clients through your brand and content — without Fiverr, Upwork, or cold outreach. Build a magnetic presence people reach out to.</p>
+          <div class="module-tags">
+            <span class="module-tag">Clients</span>
+            <span class="module-tag">Instagram</span>
+          </div>
+        </div>
+
+        <div class="module-card reveal">
+          <div class="module-num">05</div>
+          <img src="images/Rectangle 2015.png" alt="Module 05" style="width:100%; height:140px; object-fit:cover; margin-bottom:20px; opacity: 0.8;">
+          <div class="module-title">Running The<br>Business</div>
+          <p class="module-desc">Client onboarding, contracts, revisions policy, retainer structures. Turn one-time buyers into long-term clients who respect your boundaries.</p>
+          <div class="module-tags">
+            <span class="module-tag">Systems</span>
+            <span class="module-tag">Retention</span>
+          </div>
+        </div>
+
+        <div class="module-card reveal">
+          <div class="module-num">06</div>
+          <img src="images/Rectangle 2016.png" alt="Module 06" style="width:100%; height:140px; object-fit:cover; margin-bottom:20px; opacity: 0.8;">
+          <div class="module-title">Brand &<br>Scale</div>
+          <p class="module-desc">Building a recognizable design brand on Instagram and beyond. Diversifying income through templates, products, and passive design revenue streams.</p>
+          <div class="module-tags">
+            <span class="module-tag">Branding</span>
+            <span class="module-tag">Scale</span>
+            <span class="module-tag">Passive</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ───────────────────────────────────────────────────── -->
+  <section id="testimonials">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <span class="tag">Real Results</span>
+      </div>
+      <h2 class="section-title reveal">
+        Designers<br>who <span class="gold">made the shift.</span>
+      </h2>
+
+      <div class="testimonials-grid">
+
+        <div class="testimonial-featured reveal">
+          <div>
+            <div class="stars">★★★★★</div>
+            <p class="featured-quote">
+              "In 2 months I went from charging $50 a poster to<br>
+              <span class="highlight">landing a $1,500 album project.</span><br>
+              The system just works."
+            </p>
+            <div class="testimonial-author" style="margin-top: 24px;">
+              <div class="author-avatar">K</div>
+              <div>
+                <div class="author-name">Kofi A.</div>
+                <div class="author-handle">@koficreates · Poster Designer</div>
+              </div>
+            </div>
+          </div>
+          <div class="featured-meta">
+            <div class="featured-result">$1.5k</div>
+            <div class="featured-result-label">First Premium Project</div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="quote-mark">"</div>
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">I'd been designing for 3 years and didn't know how to charge properly. The pricing module alone changed everything. I doubled my rates overnight and didn't lose a single client.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">M</div>
+            <div>
+              <div class="author-name">Marcus T.</div>
+              <div class="author-handle">@marcustype</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="quote-mark">"</div>
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">Smegomade speaks like a designer who's been in the trenches. This isn't business-speak. It's real. The client system he teaches helped me get my first retainer client in week 3.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">A</div>
+            <div>
+              <div class="author-name">Aisha R.</div>
+              <div class="author-handle">@aishadesign_</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal">
+          <div class="quote-mark">"</div>
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">I was skeptical — I'd bought "design courses" before and they were all tools tutorials. This is different. It's about the business. Month 1 I made back 10x what I paid for it.</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">J</div>
+            <div>
+              <div class="author-name">Jordan L.</div>
+              <div class="author-handle">@jordanlovestype</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRICING ────────────────────────────────────────────────────────── -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="section-eyebrow reveal" style="text-align:center;">
+        <span class="tag">Choose Your Level</span>
+      </div>
+      <h2 class="section-title reveal" style="text-align:center;">
+        One investment.<br><span class="gold">Unlimited returns.</span>
+      </h2>
+      <p class="section-body reveal" style="text-align:center; margin: 16px auto 0;">
+        No subscriptions. No monthly fees. Pay once, own it forever.
+      </p>
+
+      <div class="pricing-grid">
+
+        <div class="price-card reveal">
+          <div class="price-tier">Starter</div>
+          <div class="price-amount"><span class="currency">$</span>49</div>
+          <p class="price-desc">The foundation. Core modules on mindset, craft, and pricing to get you started right.</p>
+          <ul class="price-features">
+            <li>Modules 1–3 (Mindset, Craft, Pricing)</li>
+            <li>Downloadable worksheets</li>
+            <li>Lifetime access</li>
+            <li class="inactive">Client acquisition system</li>
+            <li class="inactive">Business operations module</li>
+            <li class="inactive">Private community access</li>
+            <li class="inactive">Direct Q&A with smegomade</li>
+          </ul>
+          <a href="#" class="btn-price btn-price-outline">Get Starter</a>
+        </div>
+
+        <div class="price-card featured reveal">
+          <div class="price-tier">Full Blueprint</div>
+          <div class="price-amount"><span class="currency">$</span>97</div>
+          <p class="price-desc">The complete system — all 6 modules, community access, and ongoing updates as the game evolves.</p>
+          <ul class="price-features">
+            <li>All 6 modules (complete system)</li>
+            <li>Downloadable worksheets & templates</li>
+            <li>Lifetime access + all future updates</li>
+            <li>Client acquisition system</li>
+            <li>Business operations module</li>
+            <li>Private community access</li>
+            <li class="inactive">Direct Q&A with smegomade</li>
+          </ul>
+          <a href="#" class="btn-price btn-price-primary">Get Full Blueprint →</a>
+        </div>
+
+        <div class="price-card reveal">
+          <div class="price-tier">Elite</div>
+          <div class="price-amount"><span class="currency">$</span>197</div>
+          <p class="price-desc">Everything in Full Blueprint, plus direct access to smegomade for personalized feedback on your work and business.</p>
+          <ul class="price-features">
+            <li>All 6 modules (complete system)</li>
+            <li>Downloadable worksheets & templates</li>
+            <li>Lifetime access + all future updates</li>
+            <li>Client acquisition system</li>
+            <li>Business operations module</li>
+            <li>Private community access</li>
+            <li>Monthly group Q&A with smegomade</li>
+          </ul>
+          <a href="#" class="btn-price btn-price-outline">Get Elite</a>
+        </div>
+
+      </div>
+
+      <!-- Guarantee -->
+      <div class="reveal" style="max-width: 600px; margin: 48px auto 0; text-align: center; padding: 32px; background: var(--card); border: 1px solid var(--border); border-radius: 3px;">
+        <div style="font-size: 1.2rem; margin-bottom: 12px; font-family:var(--ff-mono); color:var(--gold);">GUARANTEE</div>
+        <div style="font-family: var(--ff-head); font-weight: 800; font-size: 1.3rem; text-transform: uppercase; margin-bottom: 10px;">30-Day Money Back Guarantee</div>
+        <p style="color: var(--muted); font-size: 0.9rem; line-height: 1.65;">Go through the materials. Apply the system. If you don't see a clear path to charging more and landing better clients, email me and I'll refund you. No questions asked.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ────────────────────────────────────────────────────────────── -->
+  <section id="faq">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div class="section-eyebrow reveal" style="display:flex; justify-content:center;">
+          <span class="tag">Common Questions</span>
+        </div>
+        <h2 class="section-title reveal">FAQ</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item reveal">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>Do I need to already be good at design to benefit from this?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            No. The Blueprint covers the technical craft side as well as the business side. Whether you're getting your fundamentals solid or you're already skilled but struggling to monetize — there's value for both. The mindset and business modules are relevant at any skill level.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>Is this specific to poster and album cover design?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            The examples and case studies are drawn from smegomade's experience in poster, album art, and clothing design. But the principles — pricing, client acquisition, brand building — apply to any graphic design niche. Logo designers, social media designers, and brand identity designers have all reported results.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>How quickly can I expect to see results?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            Most students who apply the pricing module see an immediate change in their rates — that can happen week one. For client acquisition, most see meaningful traction within 30–60 days of consistent application. Speed depends on your starting point and how much you implement.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>Is there support after I purchase?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            Full Blueprint and Elite tier includes access to the private community where you can ask questions, get feedback on your work, and connect with other designers applying the system. Elite tier additionally includes monthly live Q&A sessions with smegomade directly.
+          </div>
+        </div>
+
+        <div class="faq-item reveal">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>What format is the course in?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            A mix of written modules, video breakdowns, and downloadable worksheets you can reference repeatedly. Designed to be consumed at your own pace with no fluff — just actionable content.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FINAL CTA ───────────────────────────────────────────────────────── -->
+  <section class="final-cta" style="position:relative; overflow:hidden;">
+    <!-- CTA Background Image -->
+    <img src="images/timelesspinterest1 1.png" alt="Final Design" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity: 0.12; pointer-events:none;">
+    <div class="container" style="position:relative; z-index:2;">
+      <h2 class="final-title reveal">
+        Stop<br><span class="gold">sleeping</span><br>on yourself.
+      </h2>
+      <p class="final-sub reveal">
+        Your skills deserve to be paid for properly. The Blueprint gives you the system to make that happen — today.
+      </p>
+      <div class="final-btns reveal">
+        <a href="#pricing" class="btn-primary" style="font-size: 0.85rem; padding: 18px 36px;">
+          Get the Blueprint →
+        </a>
+      </div>
+      <div class="final-note reveal">30-day guarantee · No subscriptions · Lifetime access</div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">smego<span>®</span> Blueprint</div>
+        <ul class="footer-links">
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+        <div class="footer-copy">© 2025 smegomade. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── JS ──────────────────────────────────────────────────────────────── -->
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          // stagger siblings
+          const siblings = [...e.target.parentElement.querySelectorAll('.reveal')];
+          const idx = siblings.indexOf(e.target);
+          e.target.style.transitionDelay = (idx * 0.07) + 's';
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => io.observe(el));
+
+    // FAQ accordion
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    }
+  </script>
+</body>
+</html>
